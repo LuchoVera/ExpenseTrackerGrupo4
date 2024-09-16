@@ -1,0 +1,6 @@
+@ExpenseTrackerGrupo4_HostAddress = http://localhost:5183
+
+GET {{ExpenseTrackerGrupo4_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
