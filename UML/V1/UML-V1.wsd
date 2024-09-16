@@ -1,0 +1,164 @@
+@startuml uml-v1
+!define ENTITY class
+!define SERVICE interface
+!define REPOSITORY interface
+!define CONTROLLER class
+!define UI class
+
+package "Domain Layer" {
+    ENTITY User {
+        + string Name
+        + string Email
+        + string PasswordHash
+    }
+
+    ENTITY Expense {
+        + decimal Amount
+        + string Category
+        + DateTime Date
+    }
+
+    ENTITY Income {
+        + decimal Amount
+        + string Source
+        + DateTime Date
+    }
+
+    ENTITY Budget {
+        + decimal BudgetAmount
+        + DateTime Month
+    }
+
+    ENTITY Goal {
+        + decimal GoalAmount
+        + decimal CurrentAmount
+        + DateTime Deadline
+    }
+}
+
+package "Application Layer" {
+    SERVICE IUserService {
+        + Register(User user)
+        + Login(string email, string password)
+        + UpdateProfile(User user)
+        + ResetPassword(string email)
+    }
+
+    SERVICE IExpenseService {
+        + AddExpense(Expense expense)
+        + UpdateExpense(Expense expense)
+        + DeleteExpense(int id)
+        + GetExpensesByUser(int userId)
+    }
+
+    SERVICE IIncomeService {
+        + AddIncome(Income income)
+        + UpdateIncome(Income income)
+        + DeleteIncome(int id)
+        + GetIncomesByUser(int userId)
+    }
+
+    SERVICE IBudgetService {
+        + SetBudget(Budget budget)
+        + GetMonthlyBudget(int userId, DateTime month)
+        + TrackExpensesAgainstBudget(int userId, DateTime month)
+    }
+
+    SERVICE IGoalService {
+        + SetSavingsGoal(Goal goal)
+        + TrackGoalProgress(int userId)
+    }
+}
+
+package "Infrastructure Layer" {
+    REPOSITORY IUserRepository {
+        + GetUserById(int id)
+        + AddUser(User user)
+        + UpdateUser(User user)
+    }
+
+    REPOSITORY IExpenseRepository {
+        + AddExpense(Expense expense)
+        + UpdateExpense(Expense expense)
+        + DeleteExpense(int id)
+        + GetExpensesByUser(int userId)
+    }
+
+    REPOSITORY IIncomeRepository {
+        + AddIncome(Income income)
+        + UpdateIncome(Income income)
+        + DeleteIncome(int id)
+        + GetIncomesByUser(int userId)
+    }
+
+    REPOSITORY IBudgetRepository {
+        + SetBudget(Budget budget)
+        + GetMonthlyBudget(int userId, DateTime month)
+    }
+
+    REPOSITORY IGoalRepository {
+        + AddGoal(Goal goal)
+        + GetGoalsByUser(int userId)
+    }
+}
+
+package "Presentation Layer" {
+    CONTROLLER UserController {
+        + Register(User user)
+        + UpdateProfile(User user)
+        + ResetPassword(string email)
+    }
+
+    CONTROLLER ExpenseController {
+        + CreateExpense(Expense expense)
+        + UpdateExpense(Expense expense)
+        + DeleteExpense(int id)
+        + GetExpenses(int userId)
+    }
+
+    CONTROLLER IncomeController {
+        + CreateIncome(Income income)
+        + UpdateIncome(Income income)
+        + DeleteIncome(int id)
+        + GetIncomes(int userId)
+    }
+
+    CONTROLLER BudgetController {
+        + SetBudget(Budget budget)
+        + GetBudget(int userId)
+    }
+
+    CONTROLLER GoalController {
+        + CreateGoal(Goal goal)
+        + TrackGoalProgress(int userId)
+    }
+    CONTROLLER AuthController {
+        + Register(User user)
+        + Login(string email, string password)
+    }
+}
+
+UserController --> IUserService
+ExpenseController --> IExpenseService
+IncomeController --> IIncomeService
+BudgetController --> IBudgetService
+GoalController --> IGoalService
+AuthController --> IUserService
+
+IUserService --> IUserRepository
+IExpenseService --> IExpenseRepository
+IIncomeService --> IIncomeRepository
+IBudgetService --> IBudgetRepository
+IGoalService --> IGoalRepository
+
+User -- IUserService
+User -- IUserRepository
+Expense -- IExpenseService
+Expense -- IExpenseRepository
+Income -- IIncomeService
+Income -- IIncomeRepository
+Budget -- IBudgetService
+Budget -- IBudgetRepository
+Goal -- IGoalService
+Goal -- IGoalRepository
+@enduml
