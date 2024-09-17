@@ -10,5 +10,6 @@ public class Expense : IEntity
     public required string Description { get; set; }
     public required string Category { get; set; }
     public required DateTime Date { get; set; }
+    public required DateTime CreatedAt { get; init; } = DateTime.Now;
 }
 

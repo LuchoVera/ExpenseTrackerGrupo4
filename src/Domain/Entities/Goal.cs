@@ -9,5 +9,6 @@ public class Goal : IEntity
     public required decimal GoalAmount { get; set; }
     public required DateTime Deadline { get; set; }
     public required decimal CurrentAmount { get; set; }
+    public required DateTime CreatedAt { get; init; } = DateTime.Now;
 }
 

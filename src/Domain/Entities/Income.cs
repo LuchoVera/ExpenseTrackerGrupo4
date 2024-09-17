@@ -9,5 +9,6 @@ public class Income : IEntity
     public required decimal Amount { get; set; }
     public required string Source { get; set; }
     public required DateTime Date { get; set; }
+    public required DateTime CreatedAt { get; init; } = DateTime.Now;
 }
 
