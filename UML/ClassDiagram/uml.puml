@@ -1,0 +1,61 @@
+@startuml ExpenseTrackerGroup4
+
+left to right direction
+
+skinparam linetype ortho
+
+package Domain {
+    package Interfaces {
+        interface IEntity {
+            + Id: Guid
+        }
+    }
+
+    package Entities {
+        class User {
+            + Id: Guid
+            + Name: String
+            + Email: String
+            + PasswordHash: String
+        }
+
+        class Expense {
+            + Id: Guid
+            + UserId: Guid
+            + Amount: Decimal
+            + Description: String
+            + Category: String
+            + Date: DateTime
+        }
+
+        class Income {
+            + Id: Guid
+            + UserId: Guid
+            + Amount: Decimal
+            + Source: String
+            + Date: DateTime
+        }
+
+        class Budget {
+            + Id: Guid
+            + UserId: Guid
+            + Month: DateTime
+        }
+
+        class Goal {
+            + Id: Guid
+            + UserId: Guid
+            + GoalAmount: Decimal
+            + Deadline: DateTime
+            + CurrentAmount: Decimal
+        }
+    }
+
+    Interfaces.IEntity <|.. Entities.User
+    Interfaces.IEntity <|.. Entities.Expense
+    Interfaces.IEntity <|.. Entities.Income
+    Interfaces.IEntity <|.. Entities.Budget
+    Interfaces.IEntity <|.. Entities.Goal
+}
+
+@enduml
