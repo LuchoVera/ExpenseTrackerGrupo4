@@ -137,7 +137,9 @@ package Application {
     SERVICE IGoalService {
         - IGoalRepository goalRepository
 
-        + SetSavingsGoal(Goal goal): void
+        + AddGoal(Goal goal): void
+        + UpdateGoal(Goal goal): void
+        + DeleteGoal(Guid goalId): void
         + TrackGoalProgress(Guid userId): decimal
         + GetCurrentUserGoals(Guid userId): List<Goal>
     }
@@ -164,31 +166,31 @@ package Infraestructure {
 
     REPOSITORY IUserRepository {
         + GetUserById(int id): User
-        + AddUser(User user): bool
-        + UpdateUser(User user): bool
+        + AddUser(User user): void
+        + UpdateUser(User user): void
     }
 
     REPOSITORY IExpenseRepository {
-        + AddExpense(Expense expense): bool
-        + UpdateExpense(Expense expense): bool
-        + DeleteExpense(int id): bool
+        + AddExpense(Expense expense): void
+        + UpdateExpense(Expense expense): void
+        + DeleteExpense(int id): void
         + GetExpensesByUser(int userId): List<Expense>
     }
 
     REPOSITORY IIncomeRepository {
-        + AddIncome(Income income): bool
-        + UpdateIncome(Income income): bool
-        + DeleteIncome(int id): bool
+        + AddIncome(Income income): void
+        + UpdateIncome(Income income): void
+        + DeleteIncome(int id): void
         + GetIncomesByUser(int userId): List<Income>
     }
 
     REPOSITORY IBudgetRepository {
-        + SetBudget(Budget budget): bool
+        + SetBudget(Budget budget): void
         + GetMonthlyBudget(int userId, DateTime month): Budget
     }
 
     REPOSITORY IGoalRepository {
-        + AddGoal(Goal goal): bool
+        + AddGoal(Goal goal): void
         + GetGoalsByUser(int userId): List<Goal>
     }
 }
