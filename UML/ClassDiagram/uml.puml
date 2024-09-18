@@ -5,10 +5,9 @@ left to right direction
 skinparam linetype ortho
 
 !define ENTITY class
-!define SERVICE interface
+!define SERVICE class
 !define REPOSITORY interface
 !define CONTROLLER class
-!define FACTORY class
 
 package Domain {
     package Interfaces {
@@ -23,6 +22,7 @@ package Domain {
             + Name: String
             + Email: String
             + PasswordHash: String
+            + CreatedAt: DateTime
         }
 
         ENTITY Expense {
@@ -32,6 +32,7 @@ package Domain {
             + Description: String
             + Category: String
             + Date: DateTime
+            + CreatedAt: DateTime
         }
 
         ENTITY Income {
@@ -40,6 +41,7 @@ package Domain {
             + Amount: Decimal
             + Source: String
             + Date: DateTime
+            + CreatedAt: DateTime
         }
 
         ENTITY Budget {
@@ -54,13 +56,9 @@ package Domain {
             + GoalAmount: Decimal
             + Deadline: DateTime
             + CurrentAmount: Decimal
+            + CreatedAt: DateTime
         }
     }
-/' 
-    '  Entities.User "1" o-- "0..*" Entities.Expense : owns >
-    ' Entities.User "1" o-- "0..*" Entities.Income : owns >
-    ' Entities.User "1" o-- "0..*" Entities.Budget : owns >
-    ' Entities.User "1" o-- "0..*" Entities.Goal : owns > '/
 
     Interfaces.IEntity <|.. Entities.User
     Interfaces.IEntity <|.. Entities.Expense
@@ -71,148 +69,181 @@ package Domain {
 
 package Application {
     interface IBudgetTrackingStrategy {
-        + TrackExpensesAgainstBudget(int userId, DateTime month)
+        + TrackExpensesAgainstBudget(Guid userId, DateTime month): bool
     }
-    
+
     class FixedBudgetTracking implements IBudgetTrackingStrategy
 
-     ABSTRACT class AbstractValidator {
-        + Validate(): void
-        # ValidateFields(): boolean
-        # ValidateRelationships(): boolean
+    class AuthenticationService implements IAuthenticationService
+    class UserService implements IUserService
+    class ExpenseService implements IExpenseService
+    class IncomeServiceService implements IIncomeService
+    class BudgetServiceService implements IBudgetService
+    class GoalServiceService implements IGoalService
+    class TokenValidatorService implements ITokenValidatorService
+
+    SERVICE IAuthenticationService {
+        - IUserRepository userRepository
+        
+        + Register(User user): void
+        + Login(string email, string password): string
     }
 
-    class UserValidationService extends AbstractValidator {
-        + ValidateFields(): boolean
-        + ValidateRelationships(): boolean
+    SERVICE ITokenValidatorService {
+        + GenerateToken(User user): string
+        + ValidateToken(string token): bool
+        + GetClaimsFromToken(string token): ClaimsPrincipal
     }
-
-    class ExpenseValidationService extends AbstractValidator {
-        + ValidateFields(): boolean
-        + ValidateRelationships(): boolean
-    }
-
-    class IncomeValidationService extends AbstractValidator {
-        + ValidateFields(): boolean
-        + ValidateRelationships(): boolean
-    }
-
-    class BudgetValidationService extends AbstractValidator {
-        + ValidateFields(): boolean
-        + ValidateRelationships(): boolean
-    }
-
-    class GoalValidationService extends AbstractValidator {
-        + ValidateFields(): boolean
-        + ValidateRelationships(): boolean
-    } 
 
     SERVICE IUserService {
-        + Register(User user)
-        + Login(string email, string password)
-        + UpdateProfile(User user)
-        + ResetPassword(string email)
+        - IUserRepository userRepository
+
+        + UpdateProfile(User user): void
+        + ResetPassword(string email): void
+        + GetUserById(Guid userId): User
     }
 
     SERVICE IExpenseService {
-        + AddExpense(Expense expense)
-        + UpdateExpense(Expense expense)
-        + DeleteExpense(int id)
-        + GetExpensesByUser(int userId)
+        - IExpenseRepository expenseRepository
+
+        + AddExpense(Expense expense): void
+        + UpdateExpense(Expense expense): void
+        + DeleteExpense(Guid expenseId): void
+        + GetExpensesByUser(Guid userId): List<Expense>
+        + GetExpenseById(Guid expenseId) : Expense
     }
 
     SERVICE IIncomeService {
-        + AddIncome(Income income)
-        + UpdateIncome(Income income)
-        + DeleteIncome(int id)
-        + GetIncomesByUser(int userId)
+        - IIncomeRepository incomeRepository
+
+        + AddIncome(Income income): void
+        + UpdateIncome(Income income): void
+        + DeleteIncome(Guid expenseId): void
+        + GetIncomesByUser(Guid userId): List<Income>
+        + GetIncomeById(Guid incomeId) : Income
     }
 
     SERVICE IBudgetService {
-        + SetBudget(Budget budget)
-        + GetMonthlyBudget(int userId, DateTime month)
-        + TrackExpensesAgainstBudget(int userId, DateTime month, IBudgetTrackingStrategy strategy)
+        - IBudgetRepository budgetRepository
+
+        + AddBudget(Budget budget): void
+        + UpdateBudget(Budget budget): void
+        + DeleteBudget(Guid budgetId): void
+        + SetBudget(Budget budget): void
+        + GetMonthlyBudget(Guid userId, DateTime month): Budget
+        + TrackExpensesAgainstBudget(int userId, DateTime month, IBudgetTrackingStrategy strategy): bool
     }
 
     SERVICE IGoalService {
-        + SetSavingsGoal(Goal goal)
-        + TrackGoalProgress(int userId)
+        - IGoalRepository goalRepository
+
+        + SetSavingsGoal(Goal goal): void
+        + TrackGoalProgress(Guid userId): decimal
+        + GetCurrentUserGoals(Guid userId): List<Goal>
     }
-    
+
     IUserService o-- IBudgetTrackingStrategy
     IBudgetService o-- IBudgetTrackingStrategy
 }
 
 package Infraestructure {
+    class UserRepository implements IUserRepository {
+    }
+
+    class ExpenseRepository implements IExpenseRepository {
+    }
+
+    class IncomeRepository implements IIncomeRepository {
+    }
+
+    class BudgetRepository implements IBudgetRepository {
+    }
+
+    class GoalRepository implements IGoalRepository {
+    }
+
     REPOSITORY IUserRepository {
-        + GetUserById(int id)
-        + AddUser(User user)
-        + UpdateUser(User user)
+        + GetUserById(int id): User
+        + AddUser(User user): bool
+        + UpdateUser(User user): bool
     }
 
     REPOSITORY IExpenseRepository {
-        + AddExpense(Expense expense)
-        + UpdateExpense(Expense expense)
-        + DeleteExpense(int id)
-        + GetExpensesByUser(int userId)
+        + AddExpense(Expense expense): bool
+        + UpdateExpense(Expense expense): bool
+        + DeleteExpense(int id): bool
+        + GetExpensesByUser(int userId): List<Expense>
     }
 
     REPOSITORY IIncomeRepository {
-        + AddIncome(Income income)
-        + UpdateIncome(Income income)
-        + DeleteIncome(int id)
-        + GetIncomesByUser(int userId)
+        + AddIncome(Income income): bool
+        + UpdateIncome(Income income): bool
+        + DeleteIncome(int id): bool
+        + GetIncomesByUser(int userId): List<Income>
     }
 
     REPOSITORY IBudgetRepository {
-        + SetBudget(Budget budget)
-        + GetMonthlyBudget(int userId, DateTime month)
+        + SetBudget(Budget budget): bool
+        + GetMonthlyBudget(int userId, DateTime month): Budget
     }
 
     REPOSITORY IGoalRepository {
-        + AddGoal(Goal goal)
-        + GetGoalsByUser(int userId)
+        + AddGoal(Goal goal): bool
+        + GetGoalsByUser(int userId): List<Goal>
     }
 }
 
 package Presentation {
     CONTROLLER UserController extends MainController{
-        + Register(User user)
-        + UpdateProfile(User user)
-        + ResetPassword(string email)
+        - IUserService userService
+
+        + Register(User user): void
+        + UpdateProfile(User user): bool
+        + ResetPassword(string email): bool
     }
 
     CONTROLLER ExpenseController extends MainController{
-        + CreateExpense(Expense expense)
-        + UpdateExpense(Expense expense)
-        + DeleteExpense(int id)
-        + GetExpenses(int userId)
+        - IExpenseService expenseService
+
+        + CreateExpense(Expense expense): bool
+        + UpdateExpense(Expense expense): bool
+        + DeleteExpense(int id): bool
+        + GetExpenses(int userId): List<Expense>
     }
 
     CONTROLLER IncomeController extends MainController{
-        + CreateIncome(Income income)
-        + UpdateIncome(Income income)
-        + DeleteIncome(int id)
-        + GetIncomes(int userId)
+        - IIncomeService incomeService
+
+        + CreateIncome(Income income): bool
+        + UpdateIncome(Income income): bool
+        + DeleteIncome(int id): bool
+        + GetIncomes(int userId): List<Income>
     }
 
     CONTROLLER BudgetController extends MainController{
-        + SetBudget(Budget budget)
-        + GetBudget(int userId)
+        - IBudgetService budgetService 
+
+        + SetBudget(Budget budget): bool
+        + GetBudget(int userId): Budget
     }
 
     CONTROLLER GoalController extends MainController{
-        + CreateGoal(Goal goal)
-        + TrackGoalProgress(int userId)
+        - IGoalService goalService
+
+        + CreateGoal(Goal goal): bool
+        + TrackGoalProgress(int userId): decimal
     }
 
     CONTROLLER AuthController extends MainController{
-        + Register(User user)
-        + Login(string email, string password)
+        - IAuthenticationService authenticationService
+        - ITokenValidatorService tokenValidatorService
+        
+        + Register(User user): void
+        + Login(string email, string password): bool
     }
 
     CONTROLLER MainController {
-        + HandleValidate(entity: IEntity)
+        + HandleValidate(entity: IEntity): bool
     }
 
     UserController o-- IUserService
@@ -220,21 +251,21 @@ package Presentation {
     IncomeController o-- IIncomeService
     BudgetController o-- IBudgetService
     GoalController o-- IGoalService
-    AuthController o-- IUserService
+    AuthController o-- IAuthenticationService
+    AuthController o-- ITokenValidatorService
 }
 
-User o-- IUserService 
-Expense o-- IExpenseService
-Income o-- IIncomeService
-Budget o-- IBudgetService
-Goal o-- IGoalService
+IUserRepository o-- IUserService
+IUserRepository o-- IAuthenticationService
+IExpenseRepository o-- IExpenseService
+IIncomeRepository o-- IIncomeService
+IBudgetRepository o-- IBudgetService
+IGoalRepository o-- IGoalService
 
 IUserRepository *-- User
 IExpenseRepository *-- Expense
 IIncomeRepository *-- Income
 IBudgetRepository *-- Budget
 IGoalRepository *-- Goal
-
-MainController *-- AbstractValidator
 
 @enduml
