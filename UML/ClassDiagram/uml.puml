@@ -114,7 +114,7 @@ package Application {
     SERVICE IIncomeService implements IService {
         - IIncomeRepository incomeRepository
 
-        + GetUserIncomesByCategory(Guid userId, string category): List<Expense>
+        + GetUserIncomesBySource(Guid userId, string source): List<Expense>
         + GetUserIncomesByDateRange(Guid userId, DateTime startDate, DateTime endDate): List<Expense>
     }
 
@@ -169,7 +169,7 @@ package Infraestructure {
     } 
 
     REPOSITORY IIncomeRepository implements IRepository{
-        + GetUserIncomesByCategory(Guid userId, string category): List<Expense>
+        + GetUserIncomesBySource(Guid userId, string source): List<Expense>
         + GetUserIncomesByDateRange(Guid userId, DateTime startDate, DateTime endDate): List<Expense>
     }
 
@@ -188,7 +188,6 @@ package Presentation {
     CONTROLLER UserController{
         - IUserService userService
 
-        + Register(User user): void
         + UpdateProfile(User user): void
         + ResetPassword(string email): void
     }
