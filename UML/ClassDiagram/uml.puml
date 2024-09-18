@@ -199,6 +199,7 @@ package Presentation {
         + UpdateExpense(Expense expense): void
         + DeleteExpense(Guid id): void
         + GetExpenses(): List<Expense>
+        + GetExpenseById(Guid id): Expense
     }
 
     CONTROLLER IncomeController{
@@ -208,6 +209,7 @@ package Presentation {
         + UpdateIncome(Income income): void
         + DeleteIncome(Guid id): void
         + GetIncomes(): List<Income>
+        + GetIncomeById(Guid id): Income
     }
 
     CONTROLLER BudgetController{
@@ -224,7 +226,6 @@ package Presentation {
         + CreateGoal(Goal goal): void
         + UpdateGoal(Goal goal): void
         + DeleteGoal(Guid id): void
-        + TrackGoalProgress(): decimal
         + GetCurrentGoals(): List<Goal>
     }
 
