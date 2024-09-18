@@ -9,4 +9,23 @@ services:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - 5183:5183
+      - "5183:5183"
+
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=group4321
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "group4@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "group4321"
+    ports:
+      - "80:80"
+    depends_on:
+      - postgres
