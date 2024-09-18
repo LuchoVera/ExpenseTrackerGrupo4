@@ -68,17 +68,12 @@ package Domain {
 }
 
 package Application {
-    interface IBudgetTrackingStrategy {
-        + TrackExpensesAgainstBudget(Guid userId, DateTime month): bool
-    }
     interface IService <T>{    
         + Add(entity: T): void
         + Update(entity: T): void
         + Delete(id: Guid): void
         + GetById(id: Guid): IEntity
     }
-
-    class FixedBudgetTracking implements IBudgetTrackingStrategy
 
     class AuthenticationService implements IAuthenticationService
     class UserService implements IUserService
@@ -112,21 +107,15 @@ package Application {
     SERVICE IExpenseService implements IService {
         - IExpenseRepository expenseRepository
 
-        + AddExpense(Expense expense): void
-        + UpdateExpense(Expense expense): void
-        + DeleteExpense(Guid expenseId): void
-        + GetExpensesByUser(Guid userId): List<Expense>
-        + GetExpenseById(Guid expenseId) : Expense
+        + GetUserExpensesByCategory(Guid userId, string category): List<Expense>
+        + GetUserExpensesByDateRange(Guid userId, DateTime startDate, DateTime endDate): List<Expense>
     } 
 
     SERVICE IIncomeService implements IService {
         - IIncomeRepository incomeRepository
 
-        + AddIncome(Income income): void
-        + UpdateIncome(Income income): void
-        + DeleteIncome(Guid expenseId): void
-        + GetIncomesByUser(Guid userId): List<Income>
-        + GetIncomeById(Guid incomeId) : Income
+        + GetUserIncomesByCategory(Guid userId, string category): List<Expense>
+        + GetUserIncomesByDateRange(Guid userId, DateTime startDate, DateTime endDate): List<Expense>
     }
 
     SERVICE IBudgetService {
@@ -134,24 +123,16 @@ package Application {
 
         + AddBudget(Budget budget): void
         + UpdateBudget(Budget budget): void
-        + DeleteBudget(Guid budgetId): void
-        + SetBudget(Budget budget): void
         + GetMonthlyBudget(Guid userId, DateTime month): Budget
-        + TrackExpensesAgainstBudget(guid userId, DateTime month, IBudgetTrackingStrategy strategy): bool
+        + TrackExpensesAgainstBudget(guid userId, DateTime month): bool
     }
 
     SERVICE IGoalService implements IService{
         - IGoalRepository goalRepository
 
-        + AddGoal(Goal goal): void
-        + UpdateGoal(Goal goal): void
-        + DeleteGoal(Guid goalId): void
         + TrackGoalProgress(Guid userId): decimal
         + GetCurrentUserGoals(Guid userId): List<Goal>
     }
-
-    IUserService o-- IBudgetTrackingStrategy
-    IBudgetService o-- IBudgetTrackingStrategy
 }
 
 package Infraestructure {
@@ -183,27 +164,23 @@ package Infraestructure {
     }
 
     REPOSITORY IExpenseRepository implements IRepository {
-        + AddExpense(Expense expense): void
-        + UpdateExpense(Expense expense): void
-        + DeleteExpense(guid id): void
-        + GetExpensesByUser(guid userId): List<Expense>
+        + GetUserExpensesByCategory(Guid userId, string category): List<Expense>
+        + GetUserExpensesByDateRange(Guid userId, DateTime startDate, DateTime endDate): List<Expense> 
     } 
 
     REPOSITORY IIncomeRepository implements IRepository{
-        + AddIncome(Income income): void
-        + UpdateIncome(Income income): void
-        + DeleteIncome(guid id): void
-        + GetIncomesByUser(guid userId): List<Income>
+        + GetUserIncomesByCategory(Guid userId, string category): List<Expense>
+        + GetUserIncomesByDateRange(Guid userId, DateTime startDate, DateTime endDate): List<Expense>
     }
 
     REPOSITORY IBudgetRepository {
-        + SetBudget(Budget budget): void
+        + AddBudget(Budget budget): void
+        + UpdateBudget(Budget budget): void
         + GetMonthlyBudget(guid userId, DateTime month): Budget
     }
 
-    REPOSITORY IGoalRepository {
-        + AddGoal(Goal goal): void
-        + GetGoalsByUser(guid userId): List<Goal>
+    REPOSITORY IGoalRepository implements IRepository {
+        + GetCurrentGoalsByUser(guid userId): List<Goal>
     }
 }
 
@@ -212,40 +189,44 @@ package Presentation {
         - IUserService userService
 
         + Register(User user): void
-        + UpdateProfile(User user): bool
-        + ResetPassword(string email): bool
+        + UpdateProfile(User user): void
+        + ResetPassword(string email): void
     }
 
     CONTROLLER ExpenseController{
         - IExpenseService expenseService
 
-        + CreateExpense(Expense expense): bool
-        + UpdateExpense(Expense expense): bool
-        + DeleteExpense(guid id): bool
-        + GetExpenses(guid userId): List<Expense>
+        + CreateExpense(Expense expense): void
+        + UpdateExpense(Expense expense): void
+        + DeleteExpense(Guid id): void
+        + GetExpenses(): List<Expense>
     }
 
     CONTROLLER IncomeController{
         - IIncomeService incomeService
 
-        + CreateIncome(Income income): bool
-        + UpdateIncome(Income income): bool
-        + DeleteIncome(guid id): bool
-        + GetIncomes(guid userId): List<Income>
+        + CreateIncome(Income income): void
+        + UpdateIncome(Income income): void
+        + DeleteIncome(Guid id): void
+        + GetIncomes(): List<Income>
     }
 
     CONTROLLER BudgetController{
         - IBudgetService budgetService 
 
-        + SetBudget(Budget budget): bool
-        + GetBudget(guid userId): Budget
+        + CreateBudget(Budget budget): void
+        + UpdateBudget(Budget budget): void
+        + GetMonthlyBudget(): Budget
     }
 
     CONTROLLER GoalController{
         - IGoalService goalService
 
-        + CreateGoal(Goal goal): bool
-        + TrackGoalProgress(guid userId): decimal
+        + CreateGoal(Goal goal): void
+        + UpdateGoal(Goal goal): void
+        + DeleteGoal(Guid id): void
+        + TrackGoalProgress(): decimal
+        + GetCurrentGoals(): List<Goal>
     }
 
     CONTROLLER AuthController{
@@ -253,7 +234,7 @@ package Presentation {
         - ITokenValidatorService tokenValidatorService
         
         + Register(User user): void
-        + Login(string email, string password): bool
+        + Login(string email, string password): string
     }
 
     UserController o-- IUserService
