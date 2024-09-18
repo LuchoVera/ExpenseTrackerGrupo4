@@ -3,22 +3,17 @@
 version: '3.4'
 
 services:
-  app:
-    image: expensetrackergrupo4
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    ports:
-      - "5183:5183"
-
   postgres:
     image: postgres
     restart: always
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=group4321
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: group4321
+      POSTGRES_DB: mydatabase
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
@@ -29,3 +24,6 @@ services:
       - "80:80"
     depends_on:
       - postgres
+
+volumes:
+  pgdata:
