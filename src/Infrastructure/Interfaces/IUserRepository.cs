@@ -4,9 +4,9 @@ namespace ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
 
 public interface IUserRepository
 {
-    Task<User?> GetUserById(Guid id);
-    Task AddUser(User user);
-    Task UpdateUser(User user);
-    Task<User?> GetUserByEmail(string email);
+    Task<User?> GetUserByIdAsync(Guid id);
+    Task AddUserAsync(User user);
+    Task UpdateUserAsync(User user);
+    Task<User?> GetUserByEmailAsync(string email);
 }
 

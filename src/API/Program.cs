@@ -1,6 +1,11 @@
 using ExpenseTrackerGrupo4.src.Domain.Contexts;
 using System.Data;
 using Microsoft.Data.SqlClient;
+using ExpenseTrackerGrupo4.src.Aplication.Interfaces;
+using ExpenseTrackerGrupo4.src.Aplication.Services;
+using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
+using ExpenseTrackerGrupo4.src.Infrastructure.Repositories;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,10 +13,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+builder.Services.AddScoped<ITokenValidatorService, TokenValidatorService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-builder.Services.AddScoped<IDbConnection>(sp => 
-            new SqlConnection(""));
-        
+builder.Services.AddTransient<IDbConnection>(sp => 
+    new NpgsqlConnection("Host=localhost;Port=5432;Database=mydatabase;Username=root;Password=group4321"));
+    
 builder.Services.AddScoped<BaseContext>();
 
 var app = builder.Build();
@@ -24,5 +34,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
 
 app.Run();

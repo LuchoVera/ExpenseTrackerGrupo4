@@ -8,6 +8,6 @@ public class User : IEntity
     public required string Name { get; set; }
     public required string Email { get; set; }
     public required string PasswordHash { get; set; }
-    public required DateTime CreatedAt { get; init; } = DateTime.Now;
+    public DateTime CreatedAt { get; init; } = DateTime.Now;
 }
 

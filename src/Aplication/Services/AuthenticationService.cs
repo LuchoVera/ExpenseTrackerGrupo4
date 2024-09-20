@@ -13,9 +13,9 @@ public class AuthenticationService(
     private readonly IUserRepository _userRepository = userRepository;
     private readonly ITokenValidatorService _tokenValidatorService = tokenValidatorService;
 
-    public async Task<string> Register(User user)
+    public async Task<string> RegisterAsync(User user)
     {
-        var existingUser = await _userRepository.GetUserByEmail(user.Email);
+        var existingUser = await _userRepository.GetUserByEmailAsync(user.Email);
         if (existingUser != null)
         {
             throw new Exception("User already exists.");
@@ -23,15 +23,10 @@ public class AuthenticationService(
 
         user.PasswordHash = PasswordHasher.HashPassword(user.PasswordHash);
 
-        await _userRepository.AddUser(user);
+        await _userRepository.AddUserAsync(user);
 
         var token = _tokenValidatorService.GenerateToken(user);
 
         return token;
-    }
-
-    public async Task<string> Login(string email, string password)
-    {
-        return "";
     }
 }

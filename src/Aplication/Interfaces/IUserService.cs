@@ -4,8 +4,8 @@ namespace ExpenseTrackerGrupo4.src.Aplication.Interfaces;
 
 public interface IUserService
 {
-    Task UpdateProfile(User user);
-    // Task ResetPassword(string email);
-    Task<User?> GetUserById(Guid userId);
+    Task UpdateProfileAsync(User user);
+    // Task ResetPasswordAsync(string email);
+    Task<User?> GetUserByIdAsync(Guid userId);
 }
 

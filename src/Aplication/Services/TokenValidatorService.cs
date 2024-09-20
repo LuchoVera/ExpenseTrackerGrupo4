@@ -7,9 +7,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ExpenseTrackerGrupo4.src.Aplication.Services;
 
-public class TokenValidatorService(string secretKey) : ITokenValidatorService
+public class TokenValidatorService() : ITokenValidatorService
 {
-    private readonly string _secretKey = secretKey;
+    private readonly string _secretKey = "a5837a1eb030d1e5b6fd4d77b45c227c";
 
     public string GenerateToken(User user)
     {

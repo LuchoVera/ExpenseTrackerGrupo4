@@ -9,20 +9,14 @@ public class UserService(IUserRepository userRepository) : IUserService
 {
     private readonly IUserRepository _userRepository = userRepository;
 
-    public Task UpdateProfile(User user)
+    public Task UpdateProfileAsync(User user)
     {
-        return _userRepository.UpdateUser(user);
+        return _userRepository.UpdateUserAsync(user);
     }
 
-
-    public Task<User?> GetUserById(Guid userId)
+    public Task<User?> GetUserByIdAsync(Guid userId)
     {
-        return _userRepository.GetUserById(userId);
-    }
-
-    private string HashPassword(string password)
-    {
-        return password;
+        return _userRepository.GetUserByIdAsync(userId);
     }
 }
 
