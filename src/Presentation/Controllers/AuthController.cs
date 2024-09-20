@@ -1,3 +1,4 @@
+using AutoMapper;
 using ExpenseTrackerGrupo4.src.Aplication.Interfaces;
 using ExpenseTrackerGrupo4.src.Domain.Entities;
 using ExpenseTrackerGrupo4.src.Presentation.DTOs;
@@ -7,9 +8,11 @@ namespace ExpenseTrackerGrupo4.src.Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IAuthenticationService authenticationService) : ControllerBase
+public class AuthController(IAuthenticationService authenticationService, IMapper mapper)
+    : ControllerBase
 {
     private readonly IAuthenticationService _authenticationService = authenticationService;
+    private readonly IMapper _mapper = mapper;
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
@@ -21,14 +24,8 @@ public class AuthController(IAuthenticationService authenticationService) : Cont
 
         try
         {
-            await _authenticationService.RegisterAsync(
-                new User
-                {
-                    Name = request.Name,
-                    Email = request.Email,
-                    PasswordHash = request.Password
-                }
-            );
+            var user = _mapper.Map<User>(request);
+            await _authenticationService.RegisterAsync(user);
 
             return Ok("User registered successfully.");
         }
