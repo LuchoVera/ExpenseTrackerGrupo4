@@ -6,6 +6,7 @@ using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
 using ExpenseTrackerGrupo4.src.Infrastructure.Repositories;
 using Npgsql;
 using ExpenseTrackerGrupo4.src.Presentation.Profiles;
+using ExpenseTrackerGrupo4.src.Aplication.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddScoped<CommandInvoker>();
 builder.Services.AddScoped<ITokenValidatorService, TokenValidatorService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(typeof(ExpenseTrackerProfile));
 

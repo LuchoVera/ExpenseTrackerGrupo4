@@ -6,6 +6,6 @@ public interface IUserService
 {
     Task UpdateProfileAsync(User user);
     // Task ResetPasswordAsync(string email);
-    Task<User?> GetUserByIdAsync(Guid userId);
+    // Task<User?> GetUserByIdAsync(Guid userId);
 }
 
