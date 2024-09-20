@@ -161,6 +161,7 @@ package Infraestructure {
         + GetUserById(guid id): User
         + AddUser(User user): void
         + UpdateUser(User user): void
+        + GetUserByEmail(string email): User
     }
 
     REPOSITORY IExpenseRepository implements IRepository {
