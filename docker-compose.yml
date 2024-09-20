@@ -21,7 +21,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: "group4@admin.com"
       PGADMIN_DEFAULT_PASSWORD: "group4321"
     ports:
-      - "81:81"
+      - "80:80"
     depends_on:
       - postgres
 
