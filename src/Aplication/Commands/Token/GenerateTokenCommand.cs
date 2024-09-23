@@ -1,15 +1,20 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System.IdentityModel.Tokens.Jwt;  
+using System.Security.Claims;  
+using System.Text; 
 using ExpenseTrackerGrupo4.src.Domain.Entities;
 using ExpenseTrackerGrupo4.src.Utils;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ExpenseTrackerGrupo4.src.Aplication.Commands.Token;
 
-public class GenerateTokenCommand(User user) : ICommand<string>
+public class GenerateTokenCommand : ICommand<string>
 {
-    public User User { get; } = user;
+    public User User { get; }
+
+    public GenerateTokenCommand(User user)
+    {
+        User = user;
+    }
 
     public string Execute()
     {

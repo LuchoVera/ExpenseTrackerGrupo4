@@ -7,8 +7,11 @@ using ExpenseTrackerGrupo4.src.Infrastructure.Repositories;
 using Npgsql;
 using ExpenseTrackerGrupo4.src.Presentation.Profiles;
 using ExpenseTrackerGrupo4.src.Aplication.Commands;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
