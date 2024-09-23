@@ -19,6 +19,9 @@ public class GenerateTokenCommand : ICommand<string>
     public string Execute()
     {
         var tokenHandler = new JwtSecurityTokenHandler();
+        if(TokenValidatorConstants._secretKey == null ) {
+            throw new Exception("No secret key found.");
+        }
         var key = Encoding.ASCII.GetBytes(TokenValidatorConstants._secretKey);
 
         var tokenDescriptor = new SecurityTokenDescriptor
