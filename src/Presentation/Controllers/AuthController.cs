@@ -8,12 +8,23 @@ namespace ExpenseTrackerGrupo4.src.Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IAuthenticationService authenticationService, IMapper mapper)
-    : ControllerBase
+public class AuthController : ControllerBase
 {
-    private readonly IAuthenticationService _authenticationService = authenticationService;
-    private readonly IMapper _mapper = mapper;
+    private readonly IAuthenticationService _authenticationService;
+    private readonly IMapper _mapper;
+    private readonly ITokenValidatorService _tokenValidatorService;
 
+    public AuthController(
+        IAuthenticationService authenticationService,
+        IMapper mapper,
+        ITokenValidatorService tokenValidatorService
+    )
+    {
+        _authenticationService = authenticationService;
+        _mapper = mapper;
+        _tokenValidatorService = tokenValidatorService;
+    }
+    
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
     {
@@ -34,4 +45,33 @@ public class AuthController(IAuthenticationService authenticationService, IMappe
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
+
+   [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var token = await _authenticationService.LoginAsync(request.Email, request.Password);
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized();
+            }
+
+            return Ok(new
+            {
+                Email = request.Email,
+                Token = token
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+    
 }

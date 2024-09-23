@@ -20,4 +20,9 @@ public class AuthenticationService(
         var command = new RegisterUserCommand(user, _userRepository, _tokenValidatorService);
         return await CommandInvoker.Execute(command);
     }
+    public async Task<string> LoginAsync(string email, string password)
+    {
+        var command = new LoginUserCommand(email, password, _userRepository, _tokenValidatorService);
+        return await CommandInvoker.Execute(command);
+    }
 }
