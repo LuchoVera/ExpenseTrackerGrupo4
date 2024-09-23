@@ -10,7 +10,7 @@ namespace ExpenseTrackerGrupo4.Configurations
     {
         public static void AddJwtAuthentication(this IServiceCollection services)
         {
-            var key = Encoding.ASCII.GetBytes(TokenValidatorConstants._secretKey);
+            var key = Encoding.ASCII.GetBytes(TokenValidatorConstants._secretKey ?? string.Empty);
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
