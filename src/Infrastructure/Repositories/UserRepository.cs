@@ -38,4 +38,10 @@ public class UserRepository(IDbConnection connection) : IUserRepository
             new { Email = email.ToLower() }
         );
     }
+
+    public async Task DeleteUserAsync(Guid id)
+    {
+        var query = "DELETE FROM Users WHERE Id = @Id";
+        await _connection.ExecuteAsync(query, new { Id = id });
+    }
 }
