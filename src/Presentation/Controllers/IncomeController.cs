@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq; // Make sure to include this for ToGuid()
-using System.Security.Claims; // Include this for ClaimsPrincipal
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ExpenseTrackerGrupo4.src.Domain.Entities;
 using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
