@@ -8,8 +8,6 @@ using ExpenseTrackerGrupo4.src.Presentation.Profiles;
 using ExpenseTrackerGrupo4.src.Aplication.Commands;
 using DotNetEnv;
 using ExpenseTrackerGrupo4.Configurations;
-using ExpenseTrackerGrupo4.src.Database.Configuration;
-using ExpenseTrackerGrupo4.src.Utils;
 using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,10 +23,7 @@ builder.Services.AddScoped<CommandInvoker>();
 builder.Services.AddScoped<ITokenValidatorService, TokenValidatorService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-//builder.Services.Configure<DBOptions>(builder.Configuration.GetSection(DBOptions.ConnectionStrings));
-//builder.Services.AddScoped<IDbConnectionFactory, DBConnection>();
 
-//builder.Services.AddScoped<IDBInitializer, DBInitializer>();
 builder.Services.AddAutoMapper(typeof(ExpenseTrackerProfile));
 
 builder.Services.AddTransient<IDbConnection>(sp => 
@@ -37,7 +32,6 @@ builder.Services.AddTransient<IDbConnection>(sp =>
 builder.Services.AddScoped<BaseContext>();
 
 var app = builder.Build();
-//app.InitializeDB();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
