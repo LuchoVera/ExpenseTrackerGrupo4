@@ -1,8 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using ExpenseTrackerGrupo4.src.Domain.Entities;
 using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
-using ExpenseTrackerGrupo4.src.Application.Interfaces;
 
-namespace ExpenseTrackerGrupo4.src.Application.Services
+namespace ExpenseTrackerGrupo4.src.Infrastructure.Services
 {
     public class IncomeService : IIncomeService
     {
@@ -13,29 +15,29 @@ namespace ExpenseTrackerGrupo4.src.Application.Services
             _incomeRepository = incomeRepository;
         }
 
-        public Task AddIncome(Income income)
+        public async Task AddIncomeAsync(Income income)
         {
-            return _incomeRepository.AddIncome(income);
+            await _incomeRepository.AddIncome(income);
         }
 
-        public Task UpdateIncome(Income income)
+        public async Task<Income?> GetIncomeByIdAsync(Guid id)
         {
-            return _incomeRepository.UpdateIncome(income);
+            return await _incomeRepository.GetIncomeById(id);
         }
 
-        public Task DeleteIncome(int id)
+        public async Task<IEnumerable<Income>> GetIncomesByUserAsync(Guid userId)
         {
-            return _incomeRepository.DeleteIncome(id);
+            return await _incomeRepository.GetIncomesByUser(userId);
         }
 
-        public Task<IEnumerable<Income>> GetIncomesByUser(int userId)
+        public async Task UpdateIncomeAsync(Income income)
         {
-            return _incomeRepository.GetIncomesByUser(userId);
+            await _incomeRepository.UpdateIncome(income);
         }
 
-        public Task<Income?> GetIncomeById(int id)
+        public async Task DeleteIncomeAsync(Guid id)
         {
-            return _incomeRepository.GetIncomeById(id);
+            await _incomeRepository.DeleteIncome(id);
         }
     }
 }

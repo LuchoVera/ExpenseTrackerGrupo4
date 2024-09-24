@@ -5,9 +5,10 @@ namespace ExpenseTrackerGrupo4.src.Infrastructure.Interfaces
     public interface IIncomeRepository
     {
         Task AddIncome(Income income);
+        Task<Income?> GetIncomeById(Guid id);
+        Task<IEnumerable<Income>> GetIncomesByUser(Guid userId);
         Task UpdateIncome(Income income);
-        Task DeleteIncome(int id);
-        Task<IEnumerable<Income>> GetIncomesByUser(int userId);
-        Task<Income?> GetIncomeById(int id);
+        Task DeleteIncome(Guid id);
     }
+
 }
