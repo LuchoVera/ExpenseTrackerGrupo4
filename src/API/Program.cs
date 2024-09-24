@@ -1,5 +1,4 @@
 using ExpenseTrackerGrupo4.src.Domain.Contexts;
-using System.Data;
 using ExpenseTrackerGrupo4.src.Aplication.Interfaces;
 using ExpenseTrackerGrupo4.src.Aplication.Services;
 using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
@@ -9,6 +8,9 @@ using ExpenseTrackerGrupo4.src.Presentation.Profiles;
 using ExpenseTrackerGrupo4.src.Aplication.Commands;
 using DotNetEnv;
 using ExpenseTrackerGrupo4.Configurations;
+using ExpenseTrackerGrupo4.src.Database.Configuration;
+using ExpenseTrackerGrupo4.src.Utils;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,10 @@ builder.Services.AddScoped<CommandInvoker>();
 builder.Services.AddScoped<ITokenValidatorService, TokenValidatorService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+//builder.Services.Configure<DBOptions>(builder.Configuration.GetSection(DBOptions.ConnectionStrings));
+//builder.Services.AddScoped<IDbConnectionFactory, DBConnection>();
+
+//builder.Services.AddScoped<IDBInitializer, DBInitializer>();
 builder.Services.AddAutoMapper(typeof(ExpenseTrackerProfile));
 
 builder.Services.AddTransient<IDbConnection>(sp => 
@@ -31,6 +37,7 @@ builder.Services.AddTransient<IDbConnection>(sp =>
 builder.Services.AddScoped<BaseContext>();
 
 var app = builder.Build();
+//app.InitializeDB();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -39,7 +46,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => 
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Expense Tracker API v1");
-        c.RoutePrefix = string.Empty; // Establece la interfaz de Swagger en la raíz
+        c.RoutePrefix = string.Empty;
     });
 }
 
