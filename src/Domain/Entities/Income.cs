@@ -19,4 +19,6 @@ public class Income : IEntity
         Source = source;
         Date = date;
     }
+
+    public Income() {}
 }
