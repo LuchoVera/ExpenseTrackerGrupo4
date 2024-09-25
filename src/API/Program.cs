@@ -42,6 +42,7 @@ builder.Services.AddScoped<IIncomeService, IncomeService>();
 builder.Services.AddScoped<IBudgetNotificationLogRepository, BudgetNotificationLogRepository>();
 builder.Services.AddScoped<IGoalNotificationLogRepository, GoalNotificationLogRepository>();
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 builder.Services.AddAutoMapper(typeof(ExpenseTrackerProfile));
