@@ -1,11 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using ExpenseTrackerGrupo4.src.Domain.Entities;
 using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
 
-
 namespace ExpenseTrackerGrupo4.src.Presentation.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class IncomeController : ControllerBase
@@ -25,7 +26,13 @@ namespace ExpenseTrackerGrupo4.src.Presentation.Controllers
                 return BadRequest("Income data is required.");
             }
 
-            income.UserId = GetUserId();
+            var userId = GetUserId();
+            if (userId == Guid.Empty)
+            {
+                return Unauthorized("User ID is not valid or missing.");
+            }
+
+            income.UserId = userId;
 
             await _incomeService.AddIncomeAsync(income);
             return CreatedAtAction(nameof(GetIncomeById), new { id = income.Id }, income);
@@ -35,6 +42,11 @@ namespace ExpenseTrackerGrupo4.src.Presentation.Controllers
         public async Task<ActionResult<IEnumerable<Income>>> GetIncomes()
         {
             var userId = GetUserId();
+            if (userId == Guid.Empty)
+            {
+                return Unauthorized("User ID is not valid or missing.");
+            }
+
             var incomes = await _incomeService.GetIncomeByIdAsync(userId);
             return Ok(incomes);
         }
@@ -47,6 +59,12 @@ namespace ExpenseTrackerGrupo4.src.Presentation.Controllers
             {
                 return NotFound();
             }
+
+            if (income.UserId != GetUserId())
+            {
+                return Forbid();
+            }
+
             return Ok(income);
         }
 
