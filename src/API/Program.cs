@@ -1,21 +1,21 @@
 using ExpenseTrackerGrupo4.src.Domain.Contexts;
-using ExpenseTrackerGrupo4.src.Aplication.Interfaces;
-using ExpenseTrackerGrupo4.src.Aplication.Services;
+using System.Data;
 using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
 using ExpenseTrackerGrupo4.src.Infrastructure.Repositories;
 using Npgsql;
 using ExpenseTrackerGrupo4.src.Presentation.Profiles;
-using ExpenseTrackerGrupo4.src.Aplication.Commands;
 using DotNetEnv;
 using ExpenseTrackerGrupo4.Configurations;
+using ExpenseTrackerGrupo4.src.Aplication.Interfaces;
+using ExpenseTrackerGrupo4.src.Aplication.Services;
+using ExpenseTrackerGrupo4.src.Aplication.Commands;
+using ExpenseTrackerGrupo4.src.Infrastructure.Services;
 using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddJwtAuthentication();
 builder.Services.AddSwaggerWithJwt();
 builder.Services.AddControllers();
@@ -23,6 +23,9 @@ builder.Services.AddScoped<CommandInvoker>();
 builder.Services.AddScoped<ITokenValidatorService, TokenValidatorService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
+builder.Services.AddScoped<IIncomeService, IncomeService>();
 
 builder.Services.AddAutoMapper(typeof(ExpenseTrackerProfile));
 
@@ -33,7 +36,6 @@ builder.Services.AddScoped<BaseContext>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
