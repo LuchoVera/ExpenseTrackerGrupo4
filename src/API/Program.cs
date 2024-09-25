@@ -9,10 +9,6 @@ using ExpenseTrackerGrupo4.src.Aplication.Commands;
 using DotNetEnv;
 using ExpenseTrackerGrupo4.Configurations;
 using System.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using ExpenseTrackerGrupo4.src.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
