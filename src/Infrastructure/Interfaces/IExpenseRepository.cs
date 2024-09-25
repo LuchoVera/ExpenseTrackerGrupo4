@@ -4,8 +4,9 @@ namespace ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
 
 public interface IExpenseRepository
 {
-    Task<List<Expense>> GetUserExpensesByCategoryAsync(Guid userId, string category);
-    Task<List<Expense>> GetUserExpensesByDateRangeAsync(Guid userId, DateTime startDate, DateTime endDate);
+    Task<List<Expense>> GetUserExpensesAsync(
+        Guid userId, DateTime? startDate, DateTime? endDate, string? category
+    );
     Task AddAsync(Expense expense);
     Task UpdateAsync(Expense expense);
     Task DeleteAsync(Guid id);

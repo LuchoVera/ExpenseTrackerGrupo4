@@ -9,25 +9,33 @@ public class ExpenseRepository(IDbConnection dbConnection) : IExpenseRepository
 {
     private readonly IDbConnection _dbConnection = dbConnection;
 
-    public async Task<List<Expense>> GetUserExpensesByCategoryAsync(Guid userId, string category)
+    public async Task<List<Expense>> GetUserExpensesAsync(
+        Guid userId, DateTime? startDate, DateTime? endDate, string? category
+    )
     {
-        var query = "SELECT * FROM Expenses WHERE UserId = @UserId AND Category = @Category";
-        var expenses = await _dbConnection.QueryAsync<Expense>(query, new 
-            { UserId = userId, Category = category }
-        );
-        return expenses.ToList();
-    }
+        var query = "SELECT * FROM Expenses WHERE UserId = @UserId";
+        var parameters = new DynamicParameters();
+        parameters.Add("UserId", userId);
 
-    public async Task<List<Expense>> GetUserExpensesByDateRangeAsync(Guid userId, DateTime startDate, DateTime endDate)
-    {
-        var query = "SELECT * FROM Expenses " +
-                    "WHERE UserId = @UserId AND Date >= @StartDate AND Date <= @EndDate";
-        var expenses = await _dbConnection.QueryAsync<Expense>(query, new
-            {
-                UserId = userId,
-                StartDate = startDate,
-                EndDate = endDate
-            });
+        if (!string.IsNullOrEmpty(category))
+        {
+            query += " AND Category = @Category";
+            parameters.Add("Category", category);
+        }
+
+        if (startDate.HasValue)
+        {
+            query += " AND Date >= @StartDate";
+            parameters.Add("StartDate", startDate.Value);
+        }
+
+        if (endDate.HasValue)
+        {
+            query += " AND Date <= @EndDate";
+            parameters.Add("EndDate", endDate.Value);
+        }
+
+        var expenses = await _dbConnection.QueryAsync<Expense>(query, parameters);
         return expenses.ToList();
     }
 

@@ -10,5 +10,13 @@ public class ExpenseTrackerProfile : Profile
     {
         CreateMap<RegisterRequestDTO, User>()
             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
+
+        CreateMap<CreateUpdateExpenseDto, Expense>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));
+
+        CreateMap<CreateUpdateExpenseDto, Expense>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore()) 
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore()); 
     }
 }

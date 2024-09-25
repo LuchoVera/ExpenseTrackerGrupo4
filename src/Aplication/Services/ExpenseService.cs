@@ -36,17 +36,11 @@ public class ExpenseService (
         return await CommandInvoker.Execute(command);
     }
 
-    public async Task<List<Expense>> GetUserExpensesByCategoryAsync(Guid userId, string category)
-    {
-        var command = new GetUserExpensesByCategoryCommand(_expenseRepository, userId, category);
-        return await CommandInvoker.Execute(command);
-    }
-
-    public async Task<List<Expense>> GetUserExpensesByDateRangeAsync(
-        Guid userId, DateTime startDate, DateTime endDate
+    public async Task<List<Expense>> GetUserExpensesCommand(
+        Guid userId, DateTime? startDate, DateTime? endDate, string? category
     )
     {
-        var command = new GetExpensesByDateRangeCommand(_expenseRepository, userId, startDate, endDate);
+        var command = new GetUserExpensesCommand(_expenseRepository, userId, startDate, endDate, category);
         return await CommandInvoker.Execute(command);
     }
 
