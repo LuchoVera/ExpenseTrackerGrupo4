@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using ExpenseTrackerGrupo4.src.Domain.Entities;
 using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
 
@@ -25,11 +22,6 @@ namespace ExpenseTrackerGrupo4.src.Infrastructure.Services
             return await _incomeRepository.GetById(id);
         }
 
-        public async Task<IEnumerable<Income>> GetIncomesByUserAsync(Guid userId)
-        {
-            return await _incomeRepository.GetIncomesByUser(userId);
-        }
-
         public async Task UpdateIncomeAsync(Income income)
         {
             await _incomeRepository.Update(income);
@@ -38,6 +30,11 @@ namespace ExpenseTrackerGrupo4.src.Infrastructure.Services
         public async Task DeleteIncomeAsync(Guid id)
         {
             await _incomeRepository.Delete(id);
+        }
+
+        public Task<IEnumerable<Income>> GetIncomesByUserIdAsync(Guid userId)
+        {
+            return _incomeRepository.GetIncomesByUser(userId);
         }
     }
 }

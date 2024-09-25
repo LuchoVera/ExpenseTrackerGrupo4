@@ -47,9 +47,16 @@ namespace ExpenseTrackerGrupo4.src.Presentation.Controllers
                 return Unauthorized("User ID is not valid or missing.");
             }
 
-            var incomes = await _incomeService.GetIncomeByIdAsync(userId);
+            var incomes = await _incomeService.GetIncomesByUserIdAsync(userId);
+            
+            if (incomes == null || !incomes.Any())
+            {
+                return Ok(new List<Income>());
+            }
+
             return Ok(incomes);
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Income>> GetIncomeById(Guid id)

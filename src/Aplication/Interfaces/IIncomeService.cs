@@ -9,7 +9,7 @@ namespace ExpenseTrackerGrupo4.src.Infrastructure.Interfaces
     {
         Task AddIncomeAsync(Income income);
         Task<Income?> GetIncomeByIdAsync(Guid id);
-        Task<IEnumerable<Income>> GetIncomesByUserAsync(Guid userId);
+        Task<IEnumerable<Income>> GetIncomesByUserIdAsync(Guid userId);
         Task UpdateIncomeAsync(Income income);
         Task DeleteIncomeAsync(Guid id);
     }
