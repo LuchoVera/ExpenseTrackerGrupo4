@@ -1,5 +1,3 @@
-# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
-
 version: '3.4'
 
 services:
@@ -24,6 +22,18 @@ services:
       - "80:80"
     depends_on:
       - postgres
+
+  db_init:
+    image: postgres
+    depends_on:
+      - postgres
+    volumes:
+      - ./src/Database/Script:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: group4321
+      POSTGRES_DB: mydatabase
+    entrypoint: ["sh", "-c", "until pg_isready -h postgres; do sleep 2; done; PGPASSWORD=$$POSTGRES_PASSWORD psql -h postgres -U $$POSTGRES_USER -d $$POSTGRES_DB -f /docker-entrypoint-initdb.d/DbCreation.sql"]
 
 volumes:
   pgdata:
