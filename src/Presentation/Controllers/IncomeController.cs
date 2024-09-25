@@ -3,6 +3,7 @@ using System.Security.Claims;
 using ExpenseTrackerGrupo4.src.Domain.Entities;
 using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
 
+
 namespace ExpenseTrackerGrupo4.src.Presentation.Controllers
 {
     [Route("api/[controller]")]
@@ -63,6 +64,11 @@ namespace ExpenseTrackerGrupo4.src.Presentation.Controllers
                 return NotFound();
             }
 
+            if (existingIncome.UserId != GetUserId())
+            {
+                return Forbid();
+            }
+
             await _incomeService.UpdateIncomeAsync(updatedIncome);
             return NoContent();
         }
@@ -74,6 +80,11 @@ namespace ExpenseTrackerGrupo4.src.Presentation.Controllers
             if (income == null)
             {
                 return NotFound();
+            }
+
+            if (income.UserId != GetUserId())
+            {
+                return Forbid();
             }
 
             await _incomeService.DeleteIncomeAsync(id);

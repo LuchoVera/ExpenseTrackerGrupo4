@@ -16,33 +16,33 @@ namespace ExpenseTrackerGrupo4.src.Infrastructure.Repositories
 
         public async Task Add(Income income)
         {
-            var query = "INSERT INTO incomes (id, userid, amount, source, date, createdat) " +
+            var query = "INSERT INTO Incomes (id, userid, amount, source, date, createdat) " +
                         "VALUES (@Id, @UserId, @Amount, @Source, @Date, @CreatedAt)";
             await _dbConnection.ExecuteAsync(query, income);
         }
 
         public async Task<Income?> GetById(Guid id)
         {
-            var query = "SELECT * FROM incomes WHERE id = @Id";
+            var query = "SELECT * FROM Incomes WHERE id = @Id";
             return await _dbConnection.QueryFirstOrDefaultAsync<Income>(query, new { Id = id });
         }
 
         public async Task Update(Income income)
         {
-            var query = "UPDATE incomes SET userid = @UserId, amount = @Amount, source = @Source, " +
+            var query = "UPDATE Incomes SET userid = @UserId, amount = @Amount, source = @Source, " +
                         "date = @Date, createdat = @CreatedAt WHERE id = @Id";
             await _dbConnection.ExecuteAsync(query, income);
         }
 
         public async Task Delete(Guid id)
         {
-            var query = "DELETE FROM incomes WHERE id = @Id";
+            var query = "DELETE FROM Incomes WHERE id = @Id";
             await _dbConnection.ExecuteAsync(query, new { Id = id });
         }
 
         public async Task<IEnumerable<Income>> GetIncomesByUser(Guid userId)
         {
-            var query = "SELECT * FROM incomes WHERE userid = @UserId";
+            var query = "SELECT * FROM Incomes WHERE userid = @UserId";
             return await _dbConnection.QueryAsync<Income>(query, new { UserId = userId });
         }
     }
