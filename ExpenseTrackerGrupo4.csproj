@@ -18,4 +18,8 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="./src/Database/Script/DbCreation.sql" />
+  </ItemGroup>
+
 </Project>
