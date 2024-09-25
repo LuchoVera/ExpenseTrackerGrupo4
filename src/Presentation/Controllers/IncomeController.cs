@@ -1,9 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using ExpenseTrackerGrupo4.src.Domain.Entities;
 using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
 
@@ -38,7 +34,7 @@ namespace ExpenseTrackerGrupo4.src.Presentation.Controllers
         public async Task<ActionResult<IEnumerable<Income>>> GetIncomes()
         {
             var userId = GetUserId();
-            var incomes = await _incomeService.GetIncomesByUserAsync(userId);
+            var incomes = await _incomeService.GetIncomeByIdAsync(userId);
             return Ok(incomes);
         }
 

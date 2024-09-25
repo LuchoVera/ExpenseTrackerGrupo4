@@ -17,12 +17,12 @@ namespace ExpenseTrackerGrupo4.src.Infrastructure.Services
 
         public async Task AddIncomeAsync(Income income)
         {
-            await _incomeRepository.AddIncome(income);
+            await _incomeRepository.Add(income);
         }
 
         public async Task<Income?> GetIncomeByIdAsync(Guid id)
         {
-            return await _incomeRepository.GetIncomeById(id);
+            return await _incomeRepository.GetById(id);
         }
 
         public async Task<IEnumerable<Income>> GetIncomesByUserAsync(Guid userId)
@@ -32,12 +32,12 @@ namespace ExpenseTrackerGrupo4.src.Infrastructure.Services
 
         public async Task UpdateIncomeAsync(Income income)
         {
-            await _incomeRepository.UpdateIncome(income);
+            await _incomeRepository.Update(income);
         }
 
         public async Task DeleteIncomeAsync(Guid id)
         {
-            await _incomeRepository.DeleteIncome(id);
+            await _incomeRepository.Delete(id);
         }
     }
 }
