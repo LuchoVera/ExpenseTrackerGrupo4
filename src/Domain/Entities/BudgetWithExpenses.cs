@@ -5,7 +5,7 @@ public class BudgetWithExpenses
     public Guid UserId { get; set; }
     public DateTime Month { get; set; }
     public decimal BudgetAmount { get; set; }
-    public Guid? ExpenseId { get; set; } // Puede ser nulo si no hay gastos
+    public Guid? ExpenseId { get; set; }
     public decimal? Amount { get; set; }
     public string? Description { get; set; }
     public string? Category { get; set; }
