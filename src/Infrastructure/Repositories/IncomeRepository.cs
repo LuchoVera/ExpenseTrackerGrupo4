@@ -14,27 +14,27 @@ namespace ExpenseTrackerGrupo4.src.Infrastructure.Repositories
             _dbConnection = dbConnection;
         }
 
-        public async Task Add(Income income)
+        public async Task AddAsync(Income income)
         {
             var query = "INSERT INTO Incomes (id, userid, amount, source, date, createdat) " +
                         "VALUES (@Id, @UserId, @Amount, @Source, @Date, @CreatedAt)";
             await _dbConnection.ExecuteAsync(query, income);
         }
 
-        public async Task<Income?> GetById(Guid id)
+        public async Task<Income?> GetByIdAsync(Guid id)
         {
             var query = "SELECT * FROM Incomes WHERE id = @Id";
             return await _dbConnection.QueryFirstOrDefaultAsync<Income>(query, new { Id = id });
         }
 
-        public async Task Update(Income income)
+        public async Task UpdateAsync(Income income)
         {
             var query = "UPDATE Incomes SET userid = @UserId, amount = @Amount, source = @Source, " +
                         "date = @Date, createdat = @CreatedAt WHERE id = @Id";
             await _dbConnection.ExecuteAsync(query, income);
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var query = "DELETE FROM Incomes WHERE id = @Id";
             await _dbConnection.ExecuteAsync(query, new { Id = id });

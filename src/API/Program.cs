@@ -10,7 +10,6 @@ using ExpenseTrackerGrupo4.src.Aplication.Interfaces;
 using ExpenseTrackerGrupo4.src.Aplication.Services;
 using ExpenseTrackerGrupo4.src.Aplication.Commands;
 using ExpenseTrackerGrupo4.src.Infrastructure.Services;
-using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +21,9 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<CommandInvoker>();
 builder.Services.AddScoped<ITokenValidatorService, TokenValidatorService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IExpenseService, ExpenseService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 
 builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
 builder.Services.AddScoped<IIncomeService, IncomeService>();

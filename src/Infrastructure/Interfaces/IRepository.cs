@@ -1,10 +1,9 @@
-namespace ExpenseTrackerGrupo4.src.Infrastructure.Interfaces
+namespace ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
+
+public interface IRepository<T> where T : class
 {
-    public interface IRepository<T> where T : class
-    {
-        Task Add(T entity);
-        Task<T?> GetById(Guid id);
-        Task Update(T entity);
-        Task Delete(Guid id);
-    }
+    Task AddAsync(T entity);
+    Task<T?> GetByIdAsync(Guid id);
+    Task UpdateAsync(T entity);
+    Task DeleteAsync(Guid id);
 }

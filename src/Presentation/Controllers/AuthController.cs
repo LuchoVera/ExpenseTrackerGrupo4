@@ -12,17 +12,14 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthenticationService _authenticationService;
     private readonly IMapper _mapper;
-    private readonly ITokenValidatorService _tokenValidatorService;
 
     public AuthController(
         IAuthenticationService authenticationService,
-        IMapper mapper,
-        ITokenValidatorService tokenValidatorService
+        IMapper mapper
     )
     {
         _authenticationService = authenticationService;
         _mapper = mapper;
-        _tokenValidatorService = tokenValidatorService;
     }
     
     [HttpPost("register")]
