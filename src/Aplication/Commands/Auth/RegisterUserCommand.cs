@@ -24,7 +24,7 @@ public class RegisterUserCommand(
         }
 
         User.PasswordHash = PasswordHasher.HashPassword(User.PasswordHash);
-        await _userRepository.AddUserAsync(User);
+        await _userRepository.Add(User);
 
         var token = _tokenValidatorService.GenerateToken(User);
         return token;

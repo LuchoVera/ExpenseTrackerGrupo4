@@ -10,7 +10,7 @@ public class UserService(IUserRepository userRepository) : IUserService
 
     public async Task DeleteUserAsync(Guid id)
     {
-        await _userRepository.DeleteUserAsync(id);
+        await _userRepository.Delete(id);
     }
 
     public async Task<User?> GetUserByEmailAsync(string email)
@@ -20,11 +20,11 @@ public class UserService(IUserRepository userRepository) : IUserService
 
     public async Task<User?> GetUserByIdAsync(Guid id)
     {
-        return await _userRepository.GetUserByIdAsync(id);
+        return await _userRepository.GetById(id);
     }
 
     public async Task UpdateUserAsync(User user)
     {
-        await _userRepository.UpdateUserAsync(user);
+        await _userRepository.Update(user);
     }
 }

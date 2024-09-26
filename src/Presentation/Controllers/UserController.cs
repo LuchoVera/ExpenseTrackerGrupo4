@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using ExpenseTrackerGrupo4.src.Domain.Entities;
-using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
-using ExpenseTrackerGrupo4.src.Infrastructure.Repositories;
 using ExpenseTrackerGrupo4.src.Aplication.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using ExpenseTrackerGrupo4.src.Utils;
 
 namespace ExpenseTrackerGrupo4.src.Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class UserController(IUserService userService) : ControllerBase
 {
     private readonly IUserService _userService = userService;
@@ -19,10 +20,10 @@ public class UserController(IUserService userService) : ControllerBase
 
         if(user == null)
         {
-            return NotFound();
+            return NotFound(new { Message = "User not found." });
         }
 
-        return Ok();
+        return Ok(user);
     }
 
     [HttpPut]
@@ -30,9 +31,15 @@ public class UserController(IUserService userService) : ControllerBase
     {
         if(user == null)
         {
-            return BadRequest();
+            return BadRequest(new { Message = "Invalid user data." });
         }
         
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        user.PasswordHash = PasswordHasher.HashPassword(user.PasswordHash);
         await _userService.UpdateUserAsync(user);
         return Ok();
     }
@@ -44,10 +51,10 @@ public class UserController(IUserService userService) : ControllerBase
 
         if(user == null)
         {
-            return NotFound();
+            return NotFound(new { Message = "User not found." });
         }
 
-        return Ok();
+        return Ok(user);
     }
 
     [HttpDelete("{id}")]
@@ -55,10 +62,10 @@ public class UserController(IUserService userService) : ControllerBase
     {
         if(await _userService.GetUserByIdAsync(id) == null)
         {
-            return NotFound();
+            return NotFound(new { Message = "User not found." });
         }
 
         await _userService.DeleteUserAsync(id);
-        return Ok();
+        return NoContent();
     }
 }
