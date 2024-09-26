@@ -17,7 +17,6 @@ public class ExpenseController(IExpenseService expenseService, IMapper mapper) :
     private readonly IMapper _mapper = mapper;
 
     [HttpPost]
-    [Authorize]
     public async Task<IActionResult> CreateExpense([FromBody] CreateUpdateExpenseDto dto)
     {
         var userId = GetCurrentUserId();
@@ -32,7 +31,6 @@ public class ExpenseController(IExpenseService expenseService, IMapper mapper) :
     }
 
     [HttpGet]
-    [Authorize]
     public async Task<IActionResult> GetUserExpenses(
         [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, [FromQuery] string? category
     )
@@ -47,25 +45,15 @@ public class ExpenseController(IExpenseService expenseService, IMapper mapper) :
     }
 
     [HttpGet("{id}")]
-    [Authorize]
     public async Task<IActionResult> GetExpenseById(Guid id)
     {
         var userId = GetCurrentUserId();
-        try
-        {
-            var expense = await _expenseService.GetByIdAsync(id, userId);
-            if (expense == null) return NotFound();
-            return Ok(expense);
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid(); 
-        }
-
+        var expense = await _expenseService.GetByIdAsync(id, userId);
+        if (expense == null) return NotFound();
+        return Ok(expense);
     }
 
     [HttpPut("{id}")]
-    [Authorize]
     public async Task<IActionResult> UpdateExpense(Guid id, [FromBody] CreateUpdateExpenseDto dto)
     {
         var userId = GetCurrentUserId();
@@ -78,20 +66,13 @@ public class ExpenseController(IExpenseService expenseService, IMapper mapper) :
         existingExpense.Category = dto.Category ?? existingExpense.Category;
         existingExpense.Date = dto.Date ?? existingExpense.Date;
 
-        try
-        {
-            await _expenseService.UpdateAsync(existingExpense, userId);
-            return Ok(existingExpense);
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid(); 
-        }
+        await _expenseService.UpdateAsync(existingExpense, userId);
+        return Ok(existingExpense);
+        
     }
 
 
     [HttpDelete("{id}")]
-    [Authorize]
     public async Task<IActionResult> DeleteExpense(Guid id)
     {
         var userId = GetCurrentUserId();
@@ -99,15 +80,8 @@ public class ExpenseController(IExpenseService expenseService, IMapper mapper) :
 
         if (existingExpense == null) return NotFound();
 
-        try
-        {
-            await _expenseService.DeleteAsync(id, userId);
-            return Ok(); 
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid(); 
-        }
+        await _expenseService.DeleteAsync(id, userId);
+        return Ok(); 
     }
 
     private Guid GetCurrentUserId()
