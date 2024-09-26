@@ -73,19 +73,22 @@ public class ExpenseController(IExpenseService expenseService, IMapper mapper) :
 
         if (existingExpense == null) return NotFound();
 
-        var expenseToUpdate = _mapper.Map<Expense>(dto);
-        expenseToUpdate.UserId = userId; 
+        existingExpense.Amount = dto.Amount ?? existingExpense.Amount;
+        existingExpense.Description = dto.Description ?? existingExpense.Description;
+        existingExpense.Category = dto.Category ?? existingExpense.Category;
+        existingExpense.Date = dto.Date ?? existingExpense.Date;
 
         try
         {
-            await _expenseService.UpdateAsync(expenseToUpdate, userId);
-            return NoContent();
+            await _expenseService.UpdateAsync(existingExpense, userId);
+            return Ok(existingExpense);
         }
         catch (UnauthorizedAccessException)
         {
             return Forbid(); 
         }
     }
+
 
     [HttpDelete("{id}")]
     [Authorize]
