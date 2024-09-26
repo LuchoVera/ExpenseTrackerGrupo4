@@ -99,7 +99,7 @@ public class ExpenseController(IExpenseService expenseService, IMapper mapper) :
         try
         {
             await _expenseService.DeleteAsync(id, userId);
-            return NoContent(); 
+            return Ok(); 
         }
         catch (UnauthorizedAccessException)
         {

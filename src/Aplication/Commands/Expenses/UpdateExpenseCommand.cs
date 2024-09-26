@@ -13,8 +13,7 @@ public class UpdateExpenseCommand(
 
     public async Task Execute()
     {
-        var existingExpense = await _expenseRepository.GetByIdAsync(_expense.Id);
-        if (existingExpense == null || existingExpense.UserId != _authenticatedUserId)
+        if (_expense.UserId != _authenticatedUserId)
         {
             throw new UnauthorizedAccessException("User does not have access to this expense.");
         }
