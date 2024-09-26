@@ -10,5 +10,15 @@ public class Income : IEntity
     public required string Source { get; set; }
     public required DateTime Date { get; set; }
     public required DateTime CreatedAt { get; init; } = DateTime.Now;
-}
 
+    public Income(Guid id, Guid userId, decimal amount, string source, DateTime date)
+    {
+        Id = id;
+        UserId = userId;
+        Amount = amount;
+        Source = source;
+        Date = date;
+    }
+
+    public Income() {}
+}
