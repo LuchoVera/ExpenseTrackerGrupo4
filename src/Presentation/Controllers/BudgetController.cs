@@ -23,7 +23,6 @@ public class BudgetController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
     public async Task<IActionResult> CreateBudget([FromBody] CreateUpdateBudgetDto dto)
     {
         var userId = GetCurrentUserId();
@@ -38,7 +37,6 @@ public class BudgetController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
     public async Task<IActionResult> GetUserBudgets()
     {
         var userId = GetCurrentUserId();
@@ -50,33 +48,24 @@ public class BudgetController : ControllerBase
         return Ok(budgetsWithExpenses);
     }
 
-[HttpPut("{id}")]
-[Authorize]
-public async Task<IActionResult> UpdateBudget(Guid id, [FromBody] CreateUpdateBudgetDto dto)
-{
-    var userId = GetCurrentUserId();
-    var existingBudget = await _budgetService.GetByIdAsync(id, userId);
-
-    if (existingBudget == null) return NotFound();
-
-    existingBudget.Month = dto.Month;
-    existingBudget.BudgetAmount = dto.BudgetAmount;
-
-    try
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateBudget(Guid id, [FromBody] CreateUpdateBudgetDto dto)
     {
+        var userId = GetCurrentUserId();
+        var existingBudget = await _budgetService.GetByIdAsync(id, userId);
+
+        if (existingBudget == null) return NotFound();
+
+        existingBudget.Month = dto.Month;
+        existingBudget.BudgetAmount = dto.BudgetAmount;
+
         await _budgetService.UpdateAsync(existingBudget, userId);
         return Ok(existingBudget);
     }
-    catch (Exception ex)
-    {
-        return StatusCode(500, ex.Message);
-    }
-}
 
 
 
     [HttpDelete("{id}")]
-    [Authorize]
     public async Task<IActionResult> DeleteBudget(Guid id)
     {
         var userId = GetCurrentUserId();
@@ -84,15 +73,8 @@ public async Task<IActionResult> UpdateBudget(Guid id, [FromBody] CreateUpdateBu
 
         if (existingBudget == null) return NotFound();
 
-        try
-        {
-            await _budgetService.DeleteAsync(id, userId);
-            return NoContent();
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid(); 
-        }
+        await _budgetService.DeleteAsync(id, userId);
+        return NoContent();
     }
 
     private Guid GetCurrentUserId()
