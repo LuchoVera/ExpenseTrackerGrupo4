@@ -44,14 +44,23 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
 
         try
         {
-            var user = _mapper.Map<User>(userUpdated);
+            var existingUser = await _userService.GetUserByIdAsync(userUpdated.Id);
 
-            if(await _userService.GetUserByEmailAsync(user.Email) != null)
+            if (existingUser == null)
+            {
+                return NotFound(new { Message = $"User with ID {userUpdated.Id} not found." });
+            }
+
+             var userWithSameEmail = await _userService.GetUserByEmailAsync(userUpdated.Email);
+
+            if (userWithSameEmail != null && userWithSameEmail.Id != existingUser.Id)
             {
                 return BadRequest(new { Message = "A user with this email address already exists." });
             }
 
-            await _userService.UpdateUserAsync(user);
+            _mapper.Map(userUpdated, existingUser);
+            await _userService.UpdateUserAsync(existingUser);
+            
             return Ok();
         }
         catch (Exception ex)

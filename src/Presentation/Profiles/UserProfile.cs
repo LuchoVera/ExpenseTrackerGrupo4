@@ -7,7 +7,6 @@ public class UserProfile : Profile
     public UserProfile()
     {
         CreateMap<UserUpdateRequestDTO, User>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
     }
 }
