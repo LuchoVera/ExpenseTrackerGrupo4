@@ -10,19 +10,22 @@ namespace ExpenseTrackerGrupo4.src.Aplication.Commands.Token;
 public class GenerateTokenCommand : ICommand<string>
 {
     public User User { get; }
+    private readonly string _secretKey;
 
-    public GenerateTokenCommand(User user)
+     public GenerateTokenCommand(User user, string? secretKey = null)
     {
         User = user;
+        _secretKey = secretKey ?? TokenValidatorConstants._secretKey;
     }
 
     public string Execute()
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        if(TokenValidatorConstants._secretKey == null ) {
+        if (_secretKey == null)
+        {
             throw new Exception("No secret key found.");
         }
-        var key = Encoding.ASCII.GetBytes(TokenValidatorConstants._secretKey);
+        var key = Encoding.ASCII.GetBytes(_secretKey);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -42,4 +45,27 @@ public class GenerateTokenCommand : ICommand<string>
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+    public bool IsTokenValid(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        try
+        {
+            var key = Encoding.ASCII.GetBytes(_secretKey);
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            }, out SecurityToken validatedToken);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
 }
