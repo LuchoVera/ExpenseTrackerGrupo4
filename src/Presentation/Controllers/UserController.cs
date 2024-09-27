@@ -3,15 +3,18 @@ using ExpenseTrackerGrupo4.src.Domain.Entities;
 using ExpenseTrackerGrupo4.src.Aplication.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using ExpenseTrackerGrupo4.src.Utils;
+using ExpenseTrackerGrupo4.src.Presentation.DTOs;
+using AutoMapper;
 
 namespace ExpenseTrackerGrupo4.src.Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class UserController(IUserService userService) : ControllerBase
+public class UserController(IUserService userService, IMapper mapper) : ControllerBase
 {
     private readonly IUserService _userService = userService;
+    private readonly IMapper _mapper = mapper;
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(Guid id)
@@ -27,9 +30,9 @@ public class UserController(IUserService userService) : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateUser([FromBody] User user)
+    public async Task<IActionResult> UpdateUser([FromBody] UserUpdateRequestDTO userUpdated)
     {
-        if(user == null)
+        if(userUpdated == null)
         {
             return BadRequest(new { Message = "Invalid user data." });
         }
@@ -39,9 +42,22 @@ public class UserController(IUserService userService) : ControllerBase
             return BadRequest(ModelState);
         }
 
-        user.PasswordHash = PasswordHasher.HashPassword(user.PasswordHash);
-        await _userService.UpdateUserAsync(user);
-        return Ok();
+        try
+        {
+            var user = _mapper.Map<User>(userUpdated);
+
+            if(await _userService.GetUserByEmailAsync(user.Email) != null)
+            {
+                return BadRequest(new { Message = "A user with this email address already exists." });
+            }
+
+            await _userService.UpdateUserAsync(user);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+        }
     }
 
     [HttpGet("email/{email}")]
