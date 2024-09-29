@@ -41,6 +41,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
 builder.Services.AddScoped<IIncomeService, IncomeService>();
 builder.Services.AddScoped<IBudgetNotificationLogRepository, BudgetNotificationLogRepository>();
+builder.Services.AddScoped<IGoalNotificationLogRepository, GoalNotificationLogRepository>();
 builder.Services.AddDistributedMemoryCache();
 
 

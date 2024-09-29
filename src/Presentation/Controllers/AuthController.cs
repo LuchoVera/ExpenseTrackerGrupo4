@@ -17,6 +17,7 @@ public class AuthController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
 
+
     public AuthController(
         IAuthenticationService authenticationService,
         IMapper mapper,
@@ -69,10 +70,19 @@ public class AuthController : ControllerBase
             {
                 return Unauthorized();
             }
-            
+
             RecurringJob.AddOrUpdate<IBudgetService>(
-                "CheckBudgetNotifications",
+                $"CheckBudgetNotifications-{user.Email}",
                 service => service.CheckBudgetNotificationsAsync(user.Id),
+                Cron.Daily,
+                new RecurringJobOptions
+                {
+                    TimeZone = TimeZoneInfo.Local
+                });
+
+            RecurringJob.AddOrUpdate<IGoalService>(
+                $"CheckGoalNotifications-{user.Email}",
+                service => service.CheckGoalNotificationsAsync(user.Id),
                 Cron.Daily,
                 new RecurringJobOptions
                 {
