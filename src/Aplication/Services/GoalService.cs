@@ -104,7 +104,7 @@ public class GoalService (
                 };
             }
 
-            var user = await _userRepository.GetUserByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
             if (user == null) continue;
 
             if (goal.CurrentAmount >= goal.GoalAmount * 0.5m && !log.Notified50)

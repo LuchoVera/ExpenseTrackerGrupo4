@@ -53,7 +53,7 @@ namespace ExpenseTrackerGrupo4.src.Presentation.Controllers
             }
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(confirmRequest.NewPassword);
-            await _userRepository.UpdateUserAsync(user);
+            await _userRepository.UpdateAsync(user);
 
             return Ok("Password changed succesfully.");
         }

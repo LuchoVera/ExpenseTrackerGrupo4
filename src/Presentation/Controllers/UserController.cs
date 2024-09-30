@@ -30,7 +30,7 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateUser([FromBody] UserUpdateRequestDTO userUpdated)
+    public async Task<IActionResult> UpdateUser(Guid userId, [FromBody] UserUpdateRequestDTO userUpdated)
     {
         if(userUpdated == null)
         {
@@ -44,11 +44,11 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
 
         try
         {
-            var existingUser = await _userService.GetUserByIdAsync(userUpdated.Id);
+            var existingUser = await _userService.GetUserByIdAsync(userId);
 
             if (existingUser == null)
             {
-                return NotFound(new { Message = $"User with ID {userUpdated.Id} not found." });
+                return NotFound(new { Message = $"User with ID {userId} not found." });
             }
 
              var userWithSameEmail = await _userService.GetUserByEmailAsync(userUpdated.Email);

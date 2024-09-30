@@ -77,7 +77,7 @@ public class BudgetService (
                     };
                 }
 
-                var user = await _userRepository.GetUserByIdAsync(userId);
+                var user = await _userRepository.GetByIdAsync(userId);
                 if (user == null) continue;
 
                 if (currentAmount >= budget.BudgetAmount * 0.8m && !log.Notified80)
