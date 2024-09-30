@@ -9,7 +9,6 @@ using ExpenseTrackerGrupo4.Configurations;
 using ExpenseTrackerGrupo4.src.Aplication.Interfaces;
 using ExpenseTrackerGrupo4.src.Aplication.Services;
 using ExpenseTrackerGrupo4.src.Aplication.Commands;
-using ExpenseTrackerGrupo4.src.Infrastructure.Services;
 using ExpenseTrackerGrupo4.src.Utils;
 
 var builder = WebApplication.CreateBuilder(args);

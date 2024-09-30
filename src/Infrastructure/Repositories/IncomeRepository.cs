@@ -40,7 +40,7 @@ namespace ExpenseTrackerGrupo4.src.Infrastructure.Repositories
             await _dbConnection.ExecuteAsync(query, new { Id = id });
         }
 
-        public async Task<IEnumerable<Income>> GetIncomesByUser(Guid userId)
+        public async Task<IEnumerable<Income>> GetIncomesByUserAsync(Guid userId)
         {
             var query = "SELECT * FROM Incomes WHERE userid = @UserId";
             return await _dbConnection.QueryAsync<Income>(query, new { UserId = userId });
