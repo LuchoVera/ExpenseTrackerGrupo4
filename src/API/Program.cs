@@ -11,10 +11,18 @@ using ExpenseTrackerGrupo4.src.Aplication.Services;
 using ExpenseTrackerGrupo4.src.Aplication.Commands;
 using ExpenseTrackerGrupo4.src.Infrastructure.Services;
 using ExpenseTrackerGrupo4.src.Utils;
+using Hangfire;
+using Hangfire.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
+
+builder.Services.AddHangfire(configuration => 
+    configuration.UsePostgreSqlStorage("Host=localhost;Port=5432;Database=mydatabase;Username=root;Password=group4321"));
+
+
+builder.Services.AddHangfireServer();
 
 builder.Services.AddJwtAuthentication();
 builder.Services.AddSwaggerWithJwt();
@@ -32,6 +40,10 @@ builder.Services.AddScoped<IGoalRepository, GoalRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
 builder.Services.AddScoped<IIncomeService, IncomeService>();
+builder.Services.AddScoped<IBudgetNotificationLogRepository, BudgetNotificationLogRepository>();
+builder.Services.AddScoped<IGoalNotificationLogRepository, GoalNotificationLogRepository>();
+builder.Services.AddDistributedMemoryCache();
+
 
 builder.Services.AddAutoMapper(typeof(ExpenseTrackerProfile));
 
@@ -52,6 +64,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseHangfireDashboard();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

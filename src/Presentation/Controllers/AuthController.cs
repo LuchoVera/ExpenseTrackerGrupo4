@@ -2,7 +2,10 @@ using AutoMapper;
 using ExpenseTrackerGrupo4.src.Aplication.Interfaces;
 using ExpenseTrackerGrupo4.src.Domain.Entities;
 using ExpenseTrackerGrupo4.src.Presentation.DTOs;
+using ExpenseTrackerGrupo4.src.Infrastructure.Repositories;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using ExpenseTrackerGrupo4.src.Infrastructure.Interfaces;
 
 namespace ExpenseTrackerGrupo4.src.Presentation.Controllers;
 
@@ -12,14 +15,18 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthenticationService _authenticationService;
     private readonly IMapper _mapper;
+    private readonly IUserRepository _userRepository;
+
 
     public AuthController(
         IAuthenticationService authenticationService,
-        IMapper mapper
+        IMapper mapper,
+        IUserRepository userRepository
     )
     {
         _authenticationService = authenticationService;
         _mapper = mapper;
+        _userRepository = userRepository;
     }
     
     [HttpPost("register")]
@@ -58,6 +65,29 @@ public class AuthController : ControllerBase
             {
                 return Unauthorized();
             }
+            var user = await _userRepository.GetUserByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            RecurringJob.AddOrUpdate<IBudgetService>(
+                $"CheckBudgetNotifications-{user.Email}",
+                service => service.CheckBudgetNotificationsAsync(user.Id),
+                Cron.Daily,
+                new RecurringJobOptions
+                {
+                    TimeZone = TimeZoneInfo.Local
+                });
+
+            RecurringJob.AddOrUpdate<IGoalService>(
+                $"CheckGoalNotifications-{user.Email}",
+                service => service.CheckGoalNotificationsAsync(user.Id),
+                Cron.Daily,
+                new RecurringJobOptions
+                {
+                    TimeZone = TimeZoneInfo.Local
+                });
 
             return Ok(new
             {
